@@ -46,6 +46,12 @@ public class MainWindow extends JFrame {
         container.add(textFieldSecondTime);
 
         buttonCalculate.addActionListener(e -> {
+            if (textFieldFirstTime.getText().equals("") || textFieldSecondTime.getText().equals("")) {
+                JOptionPane.showMessageDialog(null, "Время не введено", this.getTitle(),
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
             int[] result;
 
             try {
@@ -95,7 +101,7 @@ public class MainWindow extends JFrame {
                 """
                         Эта программа предназначена для рассчёта времени
 
-                                                         Версия: 0.1.2
+                                                         Версия: 0.1.3
 
                                                         Created by Anec
                         """, "О программе", JOptionPane.PLAIN_MESSAGE));
