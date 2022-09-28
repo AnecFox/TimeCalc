@@ -46,7 +46,7 @@ public class MainWindow extends JFrame {
         container.add(textFieldSecondTime);
 
         buttonCalculate.addActionListener(e -> {
-            if (textFieldFirstTime.getText().equals("") || textFieldSecondTime.getText().equals("")) {
+            if (textFieldFirstTime.getText().trim().equals("") || textFieldSecondTime.getText().trim().equals("")) {
                 JOptionPane.showMessageDialog(null, "Время не введено", this.getTitle(),
                         JOptionPane.ERROR_MESSAGE);
                 return;
