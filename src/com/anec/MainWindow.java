@@ -12,11 +12,19 @@ public class MainWindow extends JFrame {
     private final JLabel labelSecondTime = new JLabel("До");
     private final JTextField textFieldSecondTime = new JTextField();
 
-    private final JButton buttonCalculate = new JButton("Рассчитать");
+    private final JButton buttonCalculateTimeInterval = new JButton("Рассчитать");
     private final JButton buttonAbout = new JButton("О программе");
 
     public MainWindow() {
         initialize();
+    }
+
+    private static void setSystemLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void initialize() {
@@ -27,12 +35,7 @@ public class MainWindow extends JFrame {
         setLocationRelativeTo(null);
         setIconImage(Toolkit.getDefaultToolkit().getImage(MainWindow.class.getClassLoader()
                 .getResource("com/anec/icon/icon.png")));
-
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        setSystemLookAndFeel();
 
         Container container = this.getContentPane();
         container.setLayout(new GridLayout(3, 2, 20, 5));
@@ -45,68 +48,53 @@ public class MainWindow extends JFrame {
         container.add(labelSecondTime);
         container.add(textFieldSecondTime);
 
-        buttonCalculate.addActionListener(e -> {
+        buttonCalculateTimeInterval.addActionListener(e -> {
             if (textFieldFirstTime.getText().trim().equals("") || textFieldSecondTime.getText().trim().equals("")) {
                 JOptionPane.showMessageDialog(null, "Время не введено", this.getTitle(),
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            int[] result;
+            int[] result = getTimeInterval();
+            if (result == null) return;
 
-            try {
-                result = TimeCalculating.getTimeInterval(textFieldFirstTime.getText(), textFieldSecondTime.getText());
-            } catch (DateTimeException ex) {
-                JOptionPane.showMessageDialog(null, "Время введено неправильно", this.getTitle(),
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            String hourString;
-            String minuteString;
-
-            if (String.valueOf(result[0]).endsWith("1") && result[0] != 11) {
-                hourString = "час";
-            } else {
-                char[] hoursArray = String.valueOf(result[0]).toCharArray();
-
-                int value = Integer.parseInt(String.valueOf(hoursArray[hoursArray.length - 1]));
-                if (value <= 4 && value >= 2 && !(result[0] > 11 && result[0] < 15)) {
-                    hourString = "часа";
-                } else {
-                    hourString = "часов";
-                }
-            }
-
-            if (String.valueOf(result[1]).endsWith("1") && result[1] != 11) {
-                minuteString = "минута";
-            } else {
-                char[] minutesArray = String.valueOf(result[1]).toCharArray();
-
-                int value = Integer.parseInt(String.valueOf(minutesArray[minutesArray.length - 1]));
-                if (value <= 4 && value >= 2 && !(result[1] > 11 && result[1] < 15)) {
-                    minuteString = "минуты";
-                } else {
-                    minuteString = "минут";
-                }
-            }
+            int hours = result[0];
+            int minutes = result[1];
+            String hourWord = TimeCalculator.generateWord(hours, TimeCalculator.getHourWords());
+            String minuteWord = TimeCalculator.generateWord(minutes, TimeCalculator.getMinuteWords());
 
             JOptionPane.showMessageDialog(null, "Результат: " +
-                            (result[0] == 0 ? "" : result[0] + " " + hourString + " ") +
-                            (result[1] == 0 && result[0] != 0 ? "" : result[1] + " " + minuteString),
+                            (hours == 0 ? "" : hours + " " + hourWord + " ") +
+                            (minutes == 0 && hours != 0 ? "" : minutes + " " + minuteWord),
                     this.getTitle(), JOptionPane.INFORMATION_MESSAGE);
         });
-        container.add(buttonCalculate);
+        container.add(buttonCalculateTimeInterval);
         buttonAbout.addActionListener(e -> JOptionPane.showMessageDialog(null,
                 """
                         Эта программа предназначена для рассчёта времени
 
-                                                         Версия: 0.1.3
+                                                         Версия: 0.1.4
 
                                                         Created by Anec
                         """, "О программе", JOptionPane.PLAIN_MESSAGE));
         container.add(buttonAbout);
 
+        updateUiComponents();
+    }
+
+    private int[] getTimeInterval() {
+        int[] result;
+        try {
+            result = TimeCalculator.getTimeInterval(textFieldFirstTime.getText(), textFieldSecondTime.getText());
+        } catch (DateTimeException e) {
+            JOptionPane.showMessageDialog(null, "Время введено неправильно",
+                    this.getTitle(), JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+        return result;
+    }
+
+    private void updateUiComponents() {
         for (Component c : this.getComponents()) {
             SwingUtilities.updateComponentTreeUI(c);
         }

@@ -3,6 +3,7 @@ package com.anec;
 public class Main {
 
     public static void main(String[] args) {
-        new MainWindow().setVisible(true);
+        MainWindow mainWindow = new MainWindow();
+        mainWindow.setVisible(true);
     }
 }
