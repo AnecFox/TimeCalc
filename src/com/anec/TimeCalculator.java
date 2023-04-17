@@ -17,16 +17,18 @@ public class TimeCalculator {
         int firstTimeHours = Integer.parseInt(firstTimeArray[0]);
         int firstTimeMinutes = Integer.parseInt(firstTimeArray[1]);
 
-        LocalDateTime firstDateTime = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
-                LocalDateTime.now().getDayOfMonth(), firstTimeHours, firstTimeMinutes);
+        LocalDateTime firstDateTime = LocalDateTime.of(2023, 4, 16,
+                firstTimeHours, firstTimeMinutes);
 
         String[] secondTimeArray = secondTime.split(":");
         int secondTimeHours = Integer.parseInt(secondTimeArray[0]);
         int secondTimeMinutes = Integer.parseInt(secondTimeArray[1]);
 
-        LocalDateTime secondDateTime = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
-                (secondTimeHours < firstTimeHours ? LocalDateTime.now().getDayOfMonth() + 1 :
-                        LocalDateTime.now().getDayOfMonth()), secondTimeHours, secondTimeMinutes);
+        LocalDateTime secondDateTime = LocalDateTime.of(firstDateTime.getYear(), firstDateTime.getMonth(),
+                (secondTimeHours < firstTimeHours ||
+                        (secondTimeMinutes < firstTimeMinutes &&
+                                secondTimeHours == firstTimeHours) ? firstDateTime.getDayOfMonth() + 1 :
+                        firstDateTime.getDayOfMonth()), secondTimeHours, secondTimeMinutes);
 
         int[] result = new int[2];
         result[1] = (int) firstDateTime.until(secondDateTime, ChronoUnit.MINUTES);

@@ -73,7 +73,7 @@ public class MainWindow extends JFrame {
                 """
                         Эта программа предназначена для рассчёта времени
 
-                                                         Версия: 0.1.4
+                                                         Версия: 0.1.5
 
                                                         Created by Anec
                         """, "О программе", JOptionPane.PLAIN_MESSAGE));
